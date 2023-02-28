@@ -8,11 +8,20 @@ Author/Student : Vincent Ferrigan
 maintainer     : ferrigan@kth.se
 -}
 
-module Main
+-- module Main
+module NumberChain
     ( -- * Functions
-      -- numberChain 
+      numberChain 
     ) where
 
 
--- numberChain :: Int -> Int -> [Int]
+numberChain :: Int -> Int -> [Int]
+numberChain x y = reverse $ numberChain' (x:[]) y
+  where
+    numberChain' :: [Int] -> Int -> [Int]
+    numberChain' ys@(x:xs) y 
+      | x == y    = ys
+      | x < y     = numberChain' (x+2:ys) y
+      | otherwise = numberChain' (x-3:ys) y
+                    
 

@@ -8,12 +8,15 @@ Author/Student : Vincent Ferrigan
 maintainer     : ferrigan@kth.se
 -}
 
-module Main
+-- module Main
+module JointDestinations
     ( -- * Data type
       Person
       -- * Functions
-    -- , jointDestinations
+    , jointDestinations
     ) where
+
+import Data.List
 
 type Destination = [Char]
 
@@ -21,6 +24,13 @@ data Person = Person
     { name         :: [Char] 
     , age          :: Int
     , destinations :: [Destination]
-    }
+    } deriving (Show)
 
--- jointDestinations :: [Person] -> [String]
+jointDestinations :: [Person] -> [Destination]
+jointDestinations ps = jointDestinations' $ map destinations ps
+
+jointDestinations' :: [[Destination]] -> [Destination]
+jointDestinations' []       = []
+jointDestinations' [x]      = []
+jointDestinations' [x,y]    = intersect x y
+jointDestinations' (x:y:xs) = jointDestinations' (intersect x y : xs)

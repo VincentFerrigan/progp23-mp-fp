@@ -9,7 +9,7 @@ ignoreras och inte finnas med i den resulterande listan.
 **Exempelkörningar:**
 ```
 prelude> :l list_of_numbers.hs
-[1 of 1] Compiling Main        ( list_of_numbers, interpreted )
+[1 of 1] Compiling Main        ( list_of_numbers.hs, interpreted )
 Ok, one module loaded.
 *Main> sq
 sqrt     squarePositive

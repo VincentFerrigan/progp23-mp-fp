@@ -21,3 +21,10 @@ cabal.project.local
 cabal.project.local~
 .HTF/
 .ghc.environment.*
+# My own adds. TODO: Add all tex stuff (apart from tex).
+*.pdf
+*.md
+*.cls
+*.fd
+*.bst
+*.dtx

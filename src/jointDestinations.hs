@@ -26,11 +26,25 @@ data Person = Person
     , destinations :: [Destination]
     } deriving (Show)
 
+-- Alt 1
+-- TODO: Beskriv "point-free style" och "Function Composition"
+-- Kanske står beskrivet i en mattebok (diskret) eller Chalmers Haskell ppt eller liknande
 jointDestinations :: [Person] -> [Destination]
-jointDestinations ps = jointDestinations' $ map destinations ps
+jointDestinations = map head . group . sort . concatMap destinations
 
-jointDestinations' :: [[Destination]] -> [Destination]
-jointDestinations' []       = []
-jointDestinations' [x]      = []
-jointDestinations' [x,y]    = intersect x y
-jointDestinations' (x:y:xs) = jointDestinations' (intersect x y : xs)
+-- Alt 2
+-- jointDestinations :: [Person] -> [Destination]
+-- jointDestinations = jointDestinations' . map destinations
+
+-- jointDestinations' :: [[Destination]] -> [Destination]
+-- jointDestinations' []       = []
+-- jointDestinations' [x]      = []
+-- jointDestinations' [x,y]    = intersect x y
+-- jointDestinations' (x:y:xs) = jointDestinations' (intersect x y : xs)
+
+-- TESTING
+-- TODO: Utöka testning
+-- Går det att automatisera, dvs unittesting. Kolla upp. 
+p1 = Person "Vincent" 42 ["Sweden", "Norway", "Denmark"]
+p2 = Person "Pontus" 32 ["Sweden", "Norway", "Germany"]
+p3 = Person "Dante" 22 ["Sweden", "Spain", "Portugal"]

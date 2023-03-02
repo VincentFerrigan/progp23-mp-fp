@@ -47,7 +47,7 @@
   fontsize=\footnotesize,
   }
 \setminted[bash]{
-  label=Exempelkörning i ghci,
+%  label=Exempelkörning i ghci,
   frame=single,
   fontsize=\footnotesize,
   }
@@ -113,6 +113,8 @@ module MpFP
     ) where
 
 import qualified Data.List as List
+import GHC.Arr (listArray)
+import GHC.Read (list)
 \end{code}
   }
 \section{En lista med heltal}
@@ -141,17 +143,24 @@ squarePositive = map (^2) . filter (>0)
 %    \label{code:squarePositive}
 %    \end{figure}
 I lösningsförslaget ovan returnerar
-\mintinline{haskell}{filter (>0)} en ny lista på alla de element som uppfyller 
-vilkoret \mintinline{haskell}{>0}. Vilkoret räknas även som ett \emph{predikat} 
+\mintinline{haskell}{filter (>0)} en ny lista innehållande endast de element som uppfyller 
+vilkoret \mintinline{haskell}{>0}. 
+Vilkoret är ett \emph{predikat} 
 dvs en funktion med returtyp \emph{Boolean}. 
+Även om det returnerats en ny lista och ''\emph{immutability}'' råder, dvs inga element har muterats/förändrats, 
+så innehåller den nya listan inga kopior av elementen på den gamla listan, utan snarare så pekar den ny listan enbart på de elements som uppfyller vilkoret i den givna predikat-argumentet.
 \mintinline{haskell}{map (^2)} applicerar sedan \mintinline{haskell}{(^2)} 
-på alla element och skapar en ny lista med resultaten.
-Operator section \mintinline{haskell}{(^2)} är en kvadreringsfunktion vars lambda uttryck är \mintinline{haskell}{\x -> x^2}).
+på alla element och skapar en ny lista med resultaten. 
+Som tidigare nämnt så är data i Haskell icke-muterbar (eng. \emph{immutable}. 
+När \emph{map} används, skapas en ny lista med nya värden. 
+Dessa värden baseras på resultatet av att applicera den givna funktions-argumentet på den mottagna listan.
+Funktions-argumentet \mintinline{haskell}{(^2)} är en kvadreringsfunktion skriven med \emph{operator section} -- ett syntaktiskt socker vars lambda uttryck är \mintinline{haskell}{\x -> x^2}).
 
-Den högre ordningens operatorn \mintinline{haskell}{(.)} returnerar 
+Ordningens operatorn \mintinline{haskell}{(.)} returnerar 
 en sammansättning av två funktioner som en enskild funktion (**REF s81 hutton). 
 Vilket medför att även den tillhör högre ordningens funktioner. 
 
+\subsection{Exempelkörning}
 %    \begin{figure}[H]
 \begin{spec}
 ghci> :l src/MpFP.lhs

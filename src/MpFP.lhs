@@ -11,6 +11,7 @@
 % \usepackage[utf8]{inputenc} % ska den tas bort iom lua?
 % \usepackage[utf8]{luainputenc}
 \usepackage[swedish]{babel}
+\usepackage[a4paper, total={5.5in, 8in}]{geometry}
 \usepackage{hyperref}
 \usepackage{lmodern}
 
@@ -119,20 +120,8 @@ import GHC.Read (list)
   }
 \section{En lista med heltal}
 Funktionen \mintinline{haskell}{squarePositive} räknas som en
-\emph{sammansatt funktion} (eng. \emph{function composition}) som bildats
-genom att sätta samma två funktioner av \emph{högre ordningen} (eng. \emph{high-order functions}).
-
-Dessa två, \mintinline{haskell}{map} och \mintinline{haskell}{filter}, 
-applicerar varsin givna funktion på varje element i en given lista. 
-Den inre funktionen, \mintinline{haskell}{filter}, filtrerar bort de element som inte ska kvadreras 
-medan den yttre funktionen, \mintinline{haskell}{map}, kvadrerar dem.
-Det som gör just \emph{map} och \emph{filter} till högre ordningens funktioner är att de kan ta en funktion som parameter. 
-Här tar båda emot \emph{partiellt applicerade funktioner} av \emph{binära operatorer} -- som även kallas för \emph{sections} eller \emph{operator sections}
-(REF!! s 44, hutton och %https://www.haskell.org/onlinereport/exps.html#sections). 
-%parencite{}
-%textcite{}
-%Vilket innebär att en har redan angett ett av argumenten i en infix operator. 
-
+\emph{sammansatt funktion} (eng. \emph{function composition}) som här bildats
+genom att sätta samma två funktioner av \emph{högre ordning} (eng. \emph{high-order functions}).
 %    \begin{figure}[H]
 \begin{code}
 -- | Square all positive integers in a list.
@@ -142,23 +131,51 @@ squarePositive = map (^2) . filter (>0)
 \end{code}
 %    \label{code:squarePositive}
 %    \end{figure}
-I lösningsförslaget ovan returnerar
+I grova drag så filtrerar den inre funktionen, \mintinline{haskell}{filter}, 
+bort de element som inte ska kvadreras 
+medan den yttre funktionen, \mintinline{haskell}{map}, kvadrerar dem.
+Med andra ord så applicerar \mintinline{haskell}{map} och \mintinline{haskell}{filter}
+varsin givna funktion på varje element i en given lista.
+
+\subsection{Högre ordningens funktioner}
+Det som gör \emph{map} och \emph{filter} till högre ordningens funktioner 
+är att de kan ta en funktion som parameter. 
+Här tar båda emot \emph{partiellt applicerade funktioner} av \emph{binära operatorer} 
+-- som även kallas för \emph{sections} eller \emph{operator sections}
+(REF!! s 44, hutton och %https://www.haskell.org/onlinereport/exps.html#sections
+). 
+Paramentern för \emph{operator sections} samt parametern för den sammansatta funktionen 
+är underförstådd (eng. \emph{tacit}) och är skriven i s.k. \emph{point-free style}. 
+Vilket är ett sätt att skriva inom \emph{Tacit Programming}.
+
+I lösningsförslaget returnerar
 \mintinline{haskell}{filter (>0)} en ny lista innehållande endast de element som uppfyller 
 vilkoret \mintinline{haskell}{>0}. 
 Vilkoret är ett \emph{predikat} 
 dvs en funktion med returtyp \emph{Boolean}. 
-Även om det returnerats en ny lista och ''\emph{immutability}'' råder, dvs inga element har muterats/förändrats, 
-så innehåller den nya listan inga kopior av elementen på den gamla listan, utan snarare så pekar den ny listan enbart på de elements som uppfyller vilkoret i den givna predikat-argumentet.
-\mintinline{haskell}{map (^2)} applicerar sedan \mintinline{haskell}{(^2)} 
+\mintinline{haskell}{map (^2)} applicerar därefter \mintinline{haskell}{(^2)} 
 på alla element och skapar en ny lista med resultaten. 
-Som tidigare nämnt så är data i Haskell icke-muterbar (eng. \emph{immutable}. 
-När \emph{map} används, skapas en ny lista med nya värden. 
-Dessa värden baseras på resultatet av att applicera den givna funktions-argumentet på den mottagna listan.
-Funktions-argumentet \mintinline{haskell}{(^2)} är en kvadreringsfunktion skriven med \emph{operator section} -- ett syntaktiskt socker vars lambda uttryck är \mintinline{haskell}{\x -> x^2}).
 
-Ordningens operatorn \mintinline{haskell}{(.)} returnerar 
-en sammansättning av två funktioner som en enskild funktion (**REF s81 hutton). 
+Operatorn \mintinline{haskell}{(.)} returnerar 
+en sammansättning av funktioner som en enskild funktion.
+%(**REF s81 hutton) 
 Vilket medför att även den tillhör högre ordningens funktioner. 
+
+%parencite{}
+%textcite{}
+%Vilket innebär att en har redan angett ett av argumenten i en infix operator. 
+
+\subsection{Immutability}
+Data i Haskell är icke-muterbar (eng. \emph{immutable}. 
+När \emph{map} används, skapas därför en ny lista med nya värden. 
+Dessa värden baseras på resultatet av att applicera den givna funktions-argumentet på den mottagna listan.
+Funktions-argumentet \mintinline{haskell}{(^2)} är en kvadreringsfunktion skriven som \emph{operator section}
+-- ett syntaktiskt socker vars lambda uttryck är \mintinline{haskell}{\x -> x^2}).
+
+Även om filter-funktionen returnerar en ny lista och ''\emph{immutability}'' råder,
+så innebär det inte att den nya listan innehåller kopior,
+utan snarare så pekar den nya listan enbart på de elements som uppfyller vilkoret i den givna 
+predikat-argumentet.
 
 \subsection{Exempelkörning}
 %    \begin{figure}[H]
@@ -182,27 +199,84 @@ ghci> squarePositive [-3, -5, -8, 2]
 
 \clearpage
 \section{Resmål}
-
--- TODO: Beskriv "point-free style" och "Function Composition"
--- Kanske står beskrivet i en mattebok (diskret) eller Chalmers Haskell ppt eller liknande
-
+Likt uppgift 1 så har funktionen i denna uppgift, \mintinline{haskell}{jointDestinations}, 
+implementerats som en \emph{sammansatt funktion}.
+Även här är funktionen skriven i \emph{pointfree style}.%, vilket innebär att den sammansatta funktionen definieras utan parameter
 %    \begin{figure}[H]
 \begin{code}
 type Destination = [Char]
 
-data Person = Person
+data Person  = Person
     { name         :: [Char] 
     , age          :: Int
     , destinations :: [Destination]
-    } deriving (Show)
+    } deriving (Show, Eq)
 
 jointDestinations :: [Person] -> [Destination]
 jointDestinations = map head . List.group . List.sort . concatMap destinations
 \end{code}
 %    \label{code:resmal}
 %    \end{figure}
+Ovanstående funktion tar emot en lista av typ \mintinline{haskell}{Person}
+och returnerar en lista av typ \mintinline{haskell}{Destination}
+(se exempelkörningarna i \emph{ghci} nedan).
+\mintinline{haskell}{type Destination} är ett alias 
+för data-typen \mintinline{haskell}{[Char]}. 
+Med andra ord så returnerar funktionen \mintinline{haskell}{jointDestinations} 
+en lista av strängar som här representerar 
+alla de resmål som den mottagna listans element har gemensamt.
+%TODO: Här kan du lägga till förklaringen på concatMap, sort, group map och head.
+%Hör om det är ett krav.
 
-\clearpage
+I Haskell kan ADT av produkt typ defineras med s.k. \emph{Record-syntax}.
+I lösningsförslaget har denna syntax används för data typen \mintinline{haskell}{Person}.
+Denna ADT (eller record) har \mintinline{haskell}{Person} som konstruktor.
+Konstruktorn kan ta emot tre parametrar för att skapa en record; 
+\mintinline{haskell}{name} av typen \mintinline{haskell}{[Char]} (dvs en sträng), 
+\mintinline{haskell}{age} av typen \mintinline{haskell}{Int} och
+\mintinline{haskell}{destinations} av typen \mintinline{haskell}{[Destination]}. 
+Det sistnämnda fältet är, som tidigare nämnts, en lista av strängar.
+
+Med hjälp av konstruktorn kan instanser av \mintinline{haskell}{Person} skapas på följande sätt:
+\begin{spec}
+ghci> :set +m
+ghci> let vincent = Person "Vincent Ferrigan" 
+ghci|               42  ["Sweden", "Norway", "Poland"]
+ghci| 
+ghci> vincent
+Person {name = "Vincent Ferrigan", age = 42, destinations = ["Sweden","Norway",
+"Poland"]}
+ghci> let pontus = Person { age=42, 
+ghci|                     , destinations=["Sweden", "Norway", "Germany"]
+ghci|                     , name="Pontus Pontusson"}
+ghci> let david = Person { destinations=["Sweden", "Spain", "Portugal"]
+ghci|                      , age=22
+ghci|                      , name="David Davidsson"}
+ghci| 
+ghci> david
+Person {name = "David Davidsson", age = 22, destinations = ["Sweden","Spain",
+"Portugal"]}
+\end{spec}
+Antingen likt den instansiering som gäller för andra ADT:n, 
+som produkt och summerings typer, eller
+enligt Records syntax, där ordning inte spelar roll. 
+
+Haskell skapar även automatisk funktioner i form av \emph{getters}. 
+Se exempelkörningen nedan:
+\begin{spec}
+ghci> destinations vincent
+["Sweden","Norway","Poland"]
+ghci> david
+Person {name = "David Davidsson", age = 22, destinations = ["Sweden","Spain","Portugal"]}
+ghci> age pontus
+42
+\end{spec}
+Appliceras funktion \mintinline{haskell}{jointDestinations} erhålls följande:
+\begin{spec}
+ghci> jointDestinations [pontus, david, vincent]
+["Denmark","Germany","Norway","Portugal","Spain","Sweden"]
+\end{spec}
+
 \section{Svansrekursiv sifferkedja}
 
 %    \begin{figure}[H]

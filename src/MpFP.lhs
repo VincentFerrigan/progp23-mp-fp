@@ -52,7 +52,7 @@ import GHC.Read (list)
 % \usepackage[utf8]{inputenc} % ska den tas bort iom lua?
 % \usepackage[utf8]{luainputenc}
 \usepackage[swedish]{babel}
-\usepackage[a4paper, total={5.5in, 8in}]{geometry}
+\usepackage[a4paper, total={5.5in, 8.6in}]{geometry}
 \usepackage{hyperref}
 \usepackage{lmodern}
 
@@ -82,16 +82,18 @@ import GHC.Read (list)
 \usepackage{minted}
 \usemintedstyle{colorful}
 \newminted[code]{haskell}{}
-\newminted[spec]{bash}{}
+\newminted[spec]{text}{}
+% \newminted[spec]{bash}{}
 \setminted[haskell]{
   linenos=true,
   frame=single,
   fontsize=\footnotesize,
   }
-\setminted[bash]{
+\setminted[text]{
 %  label=Exempelkörning i ghci,
   frame=single,
-  fontsize=\footnotesize,
+  %fontsize=\footnotesize,
+  fontsize=\scriptsize,
   }
 
 %% listings
@@ -132,27 +134,26 @@ import GHC.Read (list)
   \clearpage
   
 \section*{Litterärt program}
-Detta dokument är skriven som ett litterärt program i Haskell.
+Dokumentet är skriven som ett litterärt program i Haskell.
 Haskell har ett inbyggt programmeringsstöd för litterär programmering 
-(eng. \emph{literate programming} där  
+(eng. \emph{literate programming}) där  
 källkoden för det ''litterära programmet'' har suffixet \mintinline{bash}{.lhs} 
--- som står för \emph{Literate Haskell Script}.
-Källkoden kan kompileras till pdf med, som i detta fall, exempelvis Lua\LaTeX 
-och till körbar kod i GHC.
+(som står för \emph{Literate Haskell Script}).
+Källkoden kan kompileras till körbar kod i \emph{GHC} och till pdf med exemplevis, som i detta fall, 
+Lua\LaTeX.
 
-Programmet är skriven som ett biblioteksmodul/-skript som 
-kan laddas in i \emph{GHCI} för testkörning.
+Programmet är skriven som ett biblioteksmodul som 
+kan laddas in i \emph{GHCi} för testkörning.
 Programmet har även enhetstestats 
 (eng. \emph{unit tested}) i \emph{Cabal} med hjälp av testbiblioteket \emph{HUnit}.
 
 All Haskellkod för GHC-kompilatorn är omslagen i \LaTeX-stil 
 istället för att skrivas med \emph{bird style}. 
 
-\section*{Uppgift 1 - En lista med heltal}
+\clearpage
+\section*{Uppgift 1 -- En lista med heltal}
 \label{sec:1}
-Funktionen \mintinline{haskell}{squarePositive} räknas som en
-\emph{sammansatt funktion} (eng. \emph{function composition}) som här bildats
-genom att sätta samma två funktioner av \emph{högre ordning} (eng. \emph{high-order functions}).
+\subsection*{Lösningsförslag}
 %    \begin{figure}[H]
 \begin{code}
 -- | Square all positive integers in a list.
@@ -162,31 +163,16 @@ squarePositive = map (^2) . filter (>0)
 \end{code}
 %    \label{code:squarePositive}
 %    \end{figure}
+\subsection*{Sammansatt funktion}
+Funktionen \mintinline{haskell}{squarePositive} räknas som en
+\emph{sammansatt funktion} (eng. \emph{function composition}) som här bildats
+genom att sätta samma två funktioner av \emph{högre ordning} (eng. \emph{high-order functions}).
 I grova drag så filtrerar den inre funktionen, \mintinline{haskell}{filter}, 
 bort de element som inte ska kvadreras 
 medan den yttre funktionen, \mintinline{haskell}{map}, kvadrerar dem.
 Med andra ord så applicerar \mintinline{haskell}{map} och \mintinline{haskell}{filter}
-varsin givna funktion på varje element i en given lista.
-
-\subsection*{Exempelkörning}
-%    \begin{figure}[H]
-\begin{spec}
-ghci> :l src/MpFP.lhs
-[1 of 1] Compiling Main        ( src/MpFP.lhs, interpreted )
-Ok, one module loaded.
-ghci> sq
-sqrt     squarePositive
-ghci> squarePositive [-2, -1, 0, 1, 2]
-[1,4]
-ghci> squarePositive [1, 3, 2]
-[1,9,4]
-ghci> squarePositive [0, 0, 0, 0]
-[]
-ghci> squarePositive [-3, -5, -8, 2]
-[4]
-\end{spec}
-%    \label{ghci:Task1}
-%    \end{figure}
+varsin givna funktion på varje element i en given lista. 
+En mer genomgående förklaring ges nedan.
 
 \subsection*{Högre ordningens funktioner}
 Det som gör \emph{map} och \emph{filter} till högre ordningens funktioner 
@@ -213,7 +199,6 @@ högre ordningens funktioner.
 
 %parencite{}
 %textcite{}
-%Vilket innebär att en har redan angett ett av argumenten i en infix operator. 
 
 \subsection*{Immutability}
 Data i Haskell är icke-muterbar (eng. \emph{immutable}). 
@@ -224,16 +209,33 @@ Funktions-argumentet \mintinline{haskell}{(^2)} är en kvadreringsfunktion skriv
 % Alternativt lambdanotation
 
 Även om \emph{filter-funktionen} returnerar en ny lista och ''\emph{immutability}'' råder,
-så innebär det inte att den nya listan innehåller kopior,
+så innebär det inte per se att den nya listan innehåller kopior,
 utan snarare så pekar den nya listan enbart på de elements som uppfyller villkoret i den givna 
 predikat-argumentet.
 
+\subsection*{Exempelkörning}
+%    \begin{figure}[H]
+\begin{spec}
+ghci> :l src/MpFP.lhs
+[1 of 1] Compiling Main        ( src/MpFP.lhs, interpreted )
+Ok, one module loaded.
+ghci> sq
+sqrt     squarePositive
+ghci> squarePositive [-2, -1, 0, 1, 2]
+[1,4]
+ghci> squarePositive [1, 3, 2]
+[1,9,4]
+ghci> squarePositive [0, 0, 0, 0]
+[]
+ghci> squarePositive [-3, -5, -8, 2]
+[4]
+\end{spec}
+%    \label{ghci:Task1}
+%    \end{figure}
 
 \clearpage
-\section*{Uppgift 2 - Resmål}
-Likt uppgift 1 så har funktionen i denna uppgift, \mintinline{haskell}{jointDestinations}, 
-implementerats som en \emph{sammansatt funktion}.
-Även här är funktionen skriven i \emph{pointfree style}.%, vilket innebär att den sammansatta funktionen definieras utan parameter
+\section*{Uppgift 2 -- Resmål}
+\subsection*{Lösningsförslag}
 %    \begin{figure}[H]
 \begin{code}
 type Destination = [Char]
@@ -244,14 +246,19 @@ data Person  = Person
     , destinations :: [Destination]
     } deriving (Show, Eq)
 
+-- | Return a list of joint 'destinations' from a list of Persons, 
+-- only including unique elements. 
 jointDestinations :: [Person] -> [Destination]
 jointDestinations = map head . List.group . List.sort . concatMap destinations
 \end{code}
 %    \label{code:resmal}
 %    \end{figure}
+Likt uppgift 1 så har funktionen i denna uppgift, \mintinline{haskell}{jointDestinations}, 
+implementerats som en \emph{sammansatt funktion}.
+Även här är funktionen skriven i \emph{pointfree style}.%, vilket innebär att den sammansatta funktionen definieras utan parameter
 Ovanstående funktion tar emot en lista av typ \mintinline{haskell}{Person}
 och returnerar en lista av typ \mintinline{haskell}{Destination}
-(se exempelkörningarna i \emph{ghci} nedan).
+(se exempelkörningarna i \emph{GHCi} nedan).
 \mintinline{haskell}{type Destination} är ett alias 
 för data-typen \mintinline{haskell}{[Char]}. 
 Med andra ord så returnerar funktionen \mintinline{haskell}{jointDestinations} 
@@ -260,6 +267,7 @@ alla de resmål som den mottagna listans element har gemensamt.
 %TODO: Här kan du lägga till förklaringen på concatMap, sort, group map och head.
 %Hör om det är ett krav.
 
+\subsection*{Record-syntax}
 I Haskell kan ADT (\emph{Abstract Data Type}) av produkt typ definieras med s.k. \emph{Record-syntax}.
 I lösningsförslaget har denna syntax används för data typen \mintinline{haskell}{Person}.
 Denna ADT (eller record) har \mintinline{haskell}{Person} som konstruktor.
@@ -267,33 +275,36 @@ Konstruktorn kan ta emot tre parametrar för att skapa en record;
 \mintinline{haskell}{name} av typen \mintinline{haskell}{[Char]} (dvs. en sträng), 
 \mintinline{haskell}{age} av typen \mintinline{haskell}{Int} och
 \mintinline{haskell}{destinations} av typen \mintinline{haskell}{[Destination]}. 
-Det sistnämnda fältet är, som tidigare nämnts, en lista av strängar.
+Det sistnämnda fältet är, som tidigare nämnts, en lista av strängar. 
 
-Med hjälp av konstruktorn kan instanser av \mintinline{haskell}{Person} skapas på följande sätt:
+\subsection*{Instansiering}
+Med hjälp av konstruktorn kan instanser av \mintinline{haskell}{Person} skapas 
+antingen likt den instansiering som gäller för andra ADT:n (som produkt och summerings typer) 
+eller enligt Record-syntax, där ordning inte spelar någon roll. 
+See nedansteånde exempelkörning.
+\clearpage
+\subsection*{Exempelkörning}
 \begin{spec}
 ghci> :set +m
-ghci> let vincent = Person "Vincent Ferrigan" 
-ghci|               42  ["Sweden", "Norway", "Poland"]
-ghci| 
+ghci> let vincent = Person "Vincent Ferrigan" 42 ["Sweden", "Norway", "Poland"]
 ghci> vincent
-Person {name = "Vincent Ferrigan", age = 42, destinations = ["Sweden","Norway",
-"Poland"]}
-ghci> let pontus = Person { age=42, 
-ghci|                     , destinations=["Sweden", "Norway", "Germany"]
+Person {name = "Vincent Ferrigan", age = 42, destinations = ["Sweden","Norway","Poland"]}
+ghci> let pontus = Person { age=42 , destinations=["Sweden", "Norway", "Germany"]
 ghci|                     , name="Pontus Pontusson"}
 ghci> let david = Person { destinations=["Sweden", "Spain", "Portugal"]
-ghci|                      , age=22
-ghci|                      , name="David Davidsson"}
+ghci|                      , age=22, name="David Davidsson"}
 ghci| 
 ghci> david
-Person {name = "David Davidsson", age = 22, destinations = ["Sweden","Spain",
-"Portugal"]}
+Person {name = "David Davidsson", age = 22, destinations = ["Sweden","Spain","Portugal"]}
 \end{spec}
-Antingen likt den instansiering som gäller för andra ADT:n, 
-som produkt och summerings typer, eller
-enligt Records syntax, där ordning inte spelar roll. 
-
-Haskell skapar även automatisk funktioner i form av \emph{getters}. 
+Appliceras funktionen \mintinline{haskell}{jointDestinations} på en lista över 
+ovansteånde instanser erhålls följande:
+\begin{spec}
+ghci> jointDestinations [pontus, david, vincent]
+["Denmark","Germany","Norway","Portugal","Spain","Sweden"]
+\end{spec}
+Haskell skapar även automatisk funktioner i form av \emph{getters} med 
+samma namn som recordfältnamnen. 
 Se exempelkörningen nedan:
 \begin{spec}
 ghci> destinations vincent
@@ -303,32 +314,11 @@ ghci> name david
 ghci> age pontus
 42
 \end{spec}
-Appliceras funktion \mintinline{haskell}{jointDestinations} på en lista över 
-ovansteånde instanser erhålls följande:
-\begin{spec}
-ghci> jointDestinations [pontus, david, vincent]
-["Denmark","Germany","Norway","Portugal","Spain","Sweden"]
-\end{spec}
 
 \clearpage
-\section*{Svansrekursiv sifferkedja}
+\section*{Uppgift 3 -- Svansrekursiv sifferkedja}
+\subsection*{Lösningsförslag}
 %TODO ska 'current' anv istället för x och 'goal' istället för 'y'. Se uppgiftsbeskrivning
-Huvudfunktionen \mintinline{haskell}{numberChain} returnerar resultatet
-från hjälpfunktionen i omvänd ordning med hjälp av den 
-inbyggda funktionen \mintinline{haskell}{reverse}.
-Notera att \mintinline{haskell}{reverse} inte kopierar elementen från den givna listan,
-utan snarare konstruerar en ny länkad lista med en ny mängd pekare. 
-Dessa pekar på samma element som den tidigare listan.  
-Traverseringen sker därmed bara en gång och används i huvudfunktionen för att 
-undvika \mintinline{haskell}{(++)} operatorn i den rekursiva hjälpfunktionen. 
-
-Hjälpfunktionen \mintinline{haskell}{numberChain'} är i sin tur svansrekursiv
-då det rekursiva anropet står/utförs sist i funktionen och lämnar inga 
-operationer ''hängande'' när det rekursiva anropet utförs.
-Med andra ord är resultatet av det rekursiva anropet inte en operand till en operation.
-Det som gör själva anropet rekursivt, är att hjälpfunktionen anropar sig självt. 
-
-
 %    \begin{figure}[H]
 \begin{code}
 -- | Return a sequence of numbers from range x to y as a list of integers.
@@ -344,7 +334,20 @@ numberChain x y = reverse $ numberChain' [x] y
       | x < y     = numberChain' (x+2:ys) y
       | otherwise = numberChain' (x-3:ys) y
 \end{code}
-
+Huvudfunktionen \mintinline{haskell}{numberChain} returnerar resultatet
+från hjälpfunktionen i omvänd ordning. Detta med hjälp av den 
+inbyggda funktionen \mintinline{haskell}{reverse}.
+Notera att \mintinline{haskell}{reverse} inte kopierar elementen från den givna listan,
+utan snarare konstruerar en ny länkad lista med en ny mängd pekare. 
+Dessa pekar på samma element som den tidigare listan.  
+Traverseringen sker därmed bara en gång och används i huvudfunktionen för att 
+undvika \mintinline{haskell}{(++)} operatorn i den rekursiva hjälpfunktionen. 
+\subsection*{Svansrekursion}
+Hjälpfunktionen \mintinline{haskell}{numberChain'} är i sin tur svansrekursiv
+då det rekursiva anropet står/utförs sist i funktionen och lämnar inga 
+operationer ''hängande'' när det rekursiva anropet utförs.
+Med andra ord är resultatet av det rekursiva anropet inte en operand till en operation.
+Det som gör själva anropet rekursivt, är att hjälpfunktionen anropar sig självt. 
 \subsection*{Exempelkörning}
 %    \begin{figure}[H]
 \begin{spec}
@@ -356,50 +359,57 @@ ghci> numberChain 1 1
 [1]
 ghci> numberChain 17 42
 [17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 40, 42]
+ghci> numberChain (-1) (-10)
+[-1, -4, -7, -10]
+ghci> numberChain (-1) (-9)
+[-1, -4, -7, -10, -8, -11, -9]
 \end{spec}
 %    \label{ghci:numberChain}
 %    \end{figure}
 
 \clearpage
-\section*{Kortaste vägen}
-Hjälpfunktionerna \mintinline{haskell}{distance}, \mintinline{haskell}{square}, 
-\mintinline{haskell}{x'} och \mintinline{haskell}{y'}
-fyller ingen annan funktion än att beräkna ett värde. 
-Det innebär att varje anrop till dem kan bytas ut mot dess funktionskropp, 
-där parametrarna ersätts med motsvarande argument. 
-Dessa funktioner är med andra ord uttryck och inte satser 
-(eng. \emph{functions are expressions and not statements} som kan ersättas med sitt värde. 
-Vilket innebär att uttrycken är referenstransparenta. 
-
-Likt hjälpfunktionerna räknas funktionen \mintinline{haskell}{totalDistance} 
-som \emph{äkta funktioner} (eng. \emph{pure functions}). 
-Dels för att de saknar sidoeffekter och 
-dels för att de alltid ger samma resultat om
-de anropas samma värde. 
-Resultatet beror med andra ord enbart på dess argument.
-
+\section*{Uppgift 4 -- Kortaste vägen}
+\subsection*{Lösningsförslag}
 %    \begin{figure}[H]
 \begin{code}
 type Point    = (Double, Double)
 type Distance = Double
 
+-- | Square given number
 square :: Num a => a -> a
 square x = x * x
 
--- distance :: Floating a => (a, a) -> (a, a) -> a
+-- | Calculate distance between two coordinate points using Pythagorean theorem.
 distance :: Point -> Point -> Distance
 distance (x1, y1) (x2, y2) = sqrt $ square x' + square y'
  where
     x' = abs $ x2 - x1
     y' = abs $ y2 - y1
 
--- totalDistance :: Floating a => [(a, a)] -> a
+-- Return the sum of distances between the points in given list order. 
 totalDistance :: [Point] -> Distance
 totalDistance [] = 0
 totalDistance ps@(_:ps') = sum $ zipWith distance ps ps'
 \end{code}
 %    \label{code:totalDistance}
 %    \end{figure}
+\subsection*{Referenstransparens}
+Hjälpfunktionerna \mintinline{haskell}{distance}, \mintinline{haskell}{square}, 
+\mintinline{haskell}{x'} och \mintinline{haskell}{y'}
+fyller ingen annan funktion än att beräkna ett värde. 
+Det innebär att varje anrop till dem kan bytas ut mot dess funktionskropp, 
+där parametrarna ersätts med motsvarande argument. 
+Dessa funktioner är med andra ord uttryck och inte satser 
+(eng. \emph{functions are expressions and not statements}) som kan ersättas med sitt värde. 
+Vilket innebär att uttrycken är referenstransparenta. 
+
+\subsection*{Äkta funktioner}
+Likt hjälpfunktionerna räknas funktionen \mintinline{haskell}{totalDistance} 
+som \emph{äkta funktioner} (eng. \emph{pure functions}). 
+Dels för att de saknar sidoeffekter och 
+dels för att de alltid ger samma resultat om
+de anropas samma värde. 
+Resultatet beror med andra ord enbart på dess argument.
 
 \subsection*{Exempelkörning}
 %    \begin{figure}[H]

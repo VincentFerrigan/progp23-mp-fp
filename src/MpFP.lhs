@@ -1,8 +1,49 @@
+% TODO Skriv om intro delen. Vad ska vara vart? Tex eller kod delen? Eller båda kanske?
+% Se vad det står i Haddock eller Lit prog kod
+% TODO Ska ett intro skrivas där det står om vad detta är för typ av dokument?
+% Engleska kommentarer på funktionerna för Haddock?
+% TODO hur funkar: 
+% __Example:__
+% @
+% >>> squarePositive ....
+% se list_of_numbers.hs samt haddock dokumentation. Är det något som haddock testar?
+
 %! Author:   Vincent Ferrigan <ferrigan@kth.se>
 %! Date:     2023-03-02
 %! Kurs:     Programmeringsparadigm (progp23)
 %! Kurskod:  DD1360
 %! Period:   VT23 P3
+
+% Haskell Literate Programming
+\long\def\ignore#1{}
+  \ignore{
+\begin{code}
+{- |
+File name      : MpFP.lhs
+Module         : MpFP
+Description    : Mästarprov Funktionell Programmering
+                 <https://canvas.kth.se/courses/38058/assignments/237975>
+Course         : DD1360 VT23 Programmeringsparadigm (progp23)
+Author/Student : Vincent Ferrigan
+maintainer     : ferrigan@kth.se
+-}
+
+module MpFP 
+    ( -- * Data type
+      Person             -- TASK 2
+    , Destination
+      -- * Functions
+    , squarePositive     -- TASK 1
+    , jointDestinations  -- TASK 2
+    , numberChain        -- TASK 3
+    , totalDistance      -- TASK 4
+    ) where
+
+import qualified Data.List as List
+import GHC.Arr (listArray)
+import GHC.Read (list)
+\end{code}
+  }
 
 % Preamble
 \documentclass[a4paper, 11pt]{article}
@@ -36,7 +77,7 @@
 %
 
 % Haskell Literate Programming
-\long\def\ignore#1{}
+\long\def\ignore#1{} % För kodsnuttar som ska ignoreras av tex
 %% Minted
 \usepackage{minted}
 \usemintedstyle{colorful}
@@ -89,36 +130,26 @@
 \begin{document}
   \maketitle
   \clearpage
+  
+\section*{Litterärt program}
+Detta dokument är skriven som ett litterärt program i Haskell.
+Haskell har ett inbyggt programmeringsstöd för litterär programmering 
+(eng. \emph{literate programming} där  
+källkoden för det ''litterära programmet'' har suffixet \mintinline{bash}{.lhs} 
+-- som står för \emph{Literate Haskell Script}.
+Källkoden kan kompileras till pdf med, som i detta fall, exempelvis Lua\LaTeX 
+och till körbar kod i GHC.
 
-  \ignore{
-\begin{code}
-{- |
-File name      : MpFP.lhs
-Module         : MpFP
-Description    : Mästarprov Funktionell Programmering
-                 <https://canvas.kth.se/courses/38058/assignments/237975>
-Course         : DD1360 VT23 Programmeringsparadigm (progp23)
-Author/Student : Vincent Ferrigan
-maintainer     : ferrigan@kth.se
--}
+Programmet är skriven som ett biblioteksmodul/-skript som 
+kan laddas in i \emph{GHCI} för testkörning.
+Programmet har även enhetstestats 
+(eng. \emph{unit tested}) i \emph{Cabal} med hjälp av testbiblioteket \emph{HUnit}.
 
-module MpFP 
-    ( -- * Data type
-      Person             -- TASK 2
-    , Destination
-      -- * Functions
-    , squarePositive     -- TASK 1
-    , jointDestinations  -- TASK 2
-    , numberChain        -- TASK 3
-    , totalDistance      -- TASK 4
-    ) where
+All Haskellkod för GHC-kompilatorn är omslagen i \LaTeX-stil 
+istället för att skrivas med \emph{bird style}. 
 
-import qualified Data.List as List
-import GHC.Arr (listArray)
-import GHC.Read (list)
-\end{code}
-  }
-\section{En lista med heltal}
+\section*{Uppgift 1 - En lista med heltal}
+\label{sec:1}
 Funktionen \mintinline{haskell}{squarePositive} räknas som en
 \emph{sammansatt funktion} (eng. \emph{function composition}) som här bildats
 genom att sätta samma två funktioner av \emph{högre ordning} (eng. \emph{high-order functions}).
@@ -137,47 +168,7 @@ medan den yttre funktionen, \mintinline{haskell}{map}, kvadrerar dem.
 Med andra ord så applicerar \mintinline{haskell}{map} och \mintinline{haskell}{filter}
 varsin givna funktion på varje element i en given lista.
 
-\subsection{Högre ordningens funktioner}
-Det som gör \emph{map} och \emph{filter} till högre ordningens funktioner 
-är att de kan ta en funktion som parameter. 
-Här tar båda emot \emph{partiellt applicerade funktioner} av \emph{binära operatorer} 
--- som även kallas för \emph{sections} eller \emph{operator sections}
-(REF!! s 44, hutton och %https://www.haskell.org/onlinereport/exps.html#sections
-). 
-Paramentern för \emph{operator sections} samt parametern för den sammansatta funktionen 
-är underförstådd (eng. \emph{tacit}) och är skriven i s.k. \emph{point-free style}. 
-Vilket är ett sätt att skriva inom \emph{Tacit Programming}.
-
-I lösningsförslaget returnerar
-\mintinline{haskell}{filter (>0)} en ny lista innehållande endast de element som uppfyller 
-vilkoret \mintinline{haskell}{>0}. 
-Vilkoret är ett \emph{predikat} 
-dvs en funktion med returtyp \emph{Boolean}. 
-\mintinline{haskell}{map (^2)} applicerar därefter \mintinline{haskell}{(^2)} 
-på alla element och skapar en ny lista med resultaten. 
-
-Operatorn \mintinline{haskell}{(.)} returnerar 
-en sammansättning av funktioner som en enskild funktion.
-%(**REF s81 hutton) 
-Vilket medför att även den tillhör högre ordningens funktioner. 
-
-%parencite{}
-%textcite{}
-%Vilket innebär att en har redan angett ett av argumenten i en infix operator. 
-
-\subsection{Immutability}
-Data i Haskell är icke-muterbar (eng. \emph{immutable}. 
-När \emph{map} används, skapas därför en ny lista med nya värden. 
-Dessa värden baseras på resultatet av att applicera den givna funktions-argumentet på den mottagna listan.
-Funktions-argumentet \mintinline{haskell}{(^2)} är en kvadreringsfunktion skriven som \emph{operator section}
--- ett syntaktiskt socker vars lambda uttryck är \mintinline{haskell}{\x -> x^2}).
-
-Även om filter-funktionen returnerar en ny lista och ''\emph{immutability}'' råder,
-så innebär det inte att den nya listan innehåller kopior,
-utan snarare så pekar den nya listan enbart på de elements som uppfyller vilkoret i den givna 
-predikat-argumentet.
-
-\subsection{Exempelkörning}
+\subsection*{Exempelkörning}
 %    \begin{figure}[H]
 \begin{spec}
 ghci> :l src/MpFP.lhs
@@ -194,11 +185,52 @@ ghci> squarePositive [0, 0, 0, 0]
 ghci> squarePositive [-3, -5, -8, 2]
 [4]
 \end{spec}
-%    \label{code:ghciTask1}
+%    \label{ghci:Task1}
 %    \end{figure}
 
+\subsection*{Högre ordningens funktioner}
+Det som gör \emph{map} och \emph{filter} till högre ordningens funktioner 
+är att de kan ta en funktion som parameter. 
+Här tar båda emot \emph{partiellt applicerade funktioner} av \emph{binära operatorer} 
+-- som även kallas för \emph{sections} eller \emph{operator sections}.
+%(REF!! s 44, hutton och https://www.haskell.org/onlinereport/exps.html#sections). 
+Parametern för \emph{operator sections} samt parametern för den sammansatta funktionen 
+är underförstådd (eng. \emph{tacit}) och är skriven i s.k. \emph{point-free style}. 
+Vilket är ett sätt att skriva inom \emph{Tacit Programming}.
+
+I lösningsförslaget returnerar
+\mintinline{haskell}{filter (>0)} en ny lista innehållande endast de element som uppfyller 
+villkoret \mintinline{haskell}{>0}. 
+Villkoret är ett \emph{predikat} 
+dvs. en funktion med returtyp \emph{Boolean}. 
+\mintinline{haskell}{map (^2)} applicerar därefter \mintinline{haskell}{(^2)} 
+på alla element och skapar en ny lista med resultaten. 
+
+Då operatorn \mintinline{haskell}{(.)} returnerar 
+en sammansättning av funktioner som en enskild funktion räknas även den till 
+högre ordningens funktioner. 
+%(**REF s81 hutton) 
+
+%parencite{}
+%textcite{}
+%Vilket innebär att en har redan angett ett av argumenten i en infix operator. 
+
+\subsection*{Immutability}
+Data i Haskell är icke-muterbar (eng. \emph{immutable}). 
+När \emph{map-funktionen} används, skapas därför en ny lista med nya värden. 
+Dessa värden baseras på resultatet av att applicera den givna funktions-argumentet på den mottagna listan.
+Funktions-argumentet \mintinline{haskell}{(^2)} är en kvadreringsfunktion skriven som \emph{operator section}
+-- ett syntaktiskt socker vars lambda uttryck är \mintinline{haskell}{\x -> x^2}.
+% Alternativt lambdanotation
+
+Även om \emph{filter-funktionen} returnerar en ny lista och ''\emph{immutability}'' råder,
+så innebär det inte att den nya listan innehåller kopior,
+utan snarare så pekar den nya listan enbart på de elements som uppfyller villkoret i den givna 
+predikat-argumentet.
+
+
 \clearpage
-\section{Resmål}
+\section*{Uppgift 2 - Resmål}
 Likt uppgift 1 så har funktionen i denna uppgift, \mintinline{haskell}{jointDestinations}, 
 implementerats som en \emph{sammansatt funktion}.
 Även här är funktionen skriven i \emph{pointfree style}.%, vilket innebär att den sammansatta funktionen definieras utan parameter
@@ -228,11 +260,11 @@ alla de resmål som den mottagna listans element har gemensamt.
 %TODO: Här kan du lägga till förklaringen på concatMap, sort, group map och head.
 %Hör om det är ett krav.
 
-I Haskell kan ADT av produkt typ defineras med s.k. \emph{Record-syntax}.
+I Haskell kan ADT (\emph{Abstract Data Type}) av produkt typ definieras med s.k. \emph{Record-syntax}.
 I lösningsförslaget har denna syntax används för data typen \mintinline{haskell}{Person}.
 Denna ADT (eller record) har \mintinline{haskell}{Person} som konstruktor.
 Konstruktorn kan ta emot tre parametrar för att skapa en record; 
-\mintinline{haskell}{name} av typen \mintinline{haskell}{[Char]} (dvs en sträng), 
+\mintinline{haskell}{name} av typen \mintinline{haskell}{[Char]} (dvs. en sträng), 
 \mintinline{haskell}{age} av typen \mintinline{haskell}{Int} och
 \mintinline{haskell}{destinations} av typen \mintinline{haskell}{[Destination]}. 
 Det sistnämnda fältet är, som tidigare nämnts, en lista av strängar.
@@ -266,35 +298,85 @@ Se exempelkörningen nedan:
 \begin{spec}
 ghci> destinations vincent
 ["Sweden","Norway","Poland"]
-ghci> david
-Person {name = "David Davidsson", age = 22, destinations = ["Sweden","Spain","Portugal"]}
+ghci> name david
+"David Davidsson"
 ghci> age pontus
 42
 \end{spec}
-Appliceras funktion \mintinline{haskell}{jointDestinations} erhålls följande:
+Appliceras funktion \mintinline{haskell}{jointDestinations} på en lista över 
+ovansteånde instanser erhålls följande:
 \begin{spec}
 ghci> jointDestinations [pontus, david, vincent]
 ["Denmark","Germany","Norway","Portugal","Spain","Sweden"]
 \end{spec}
 
-\section{Svansrekursiv sifferkedja}
+\clearpage
+\section*{Svansrekursiv sifferkedja}
+%TODO ska 'current' anv istället för x och 'goal' istället för 'y'. Se uppgiftsbeskrivning
+Huvudfunktionen \mintinline{haskell}{numberChain} returnerar resultatet
+från hjälpfunktionen i omvänd ordning med hjälp av den 
+inbyggda funktionen \mintinline{haskell}{reverse}.
+Notera att \mintinline{haskell}{reverse} inte kopierar elementen från den givna listan,
+utan snarare konstruerar en ny länkad lista med en ny mängd pekare. 
+Dessa pekar på samma element som den tidigare listan.  
+Traverseringen sker därmed bara en gång och används i huvudfunktionen för att 
+undvika \mintinline{haskell}{(++)} operatorn i den rekursiva hjälpfunktionen. 
+
+Hjälpfunktionen \mintinline{haskell}{numberChain'} är i sin tur svansrekursiv
+då det rekursiva anropet står/utförs sist i funktionen och lämnar inga 
+operationer ''hängande'' när det rekursiva anropet utförs.
+Med andra ord är resultatet av det rekursiva anropet inte en operand till en operation.
+Det som gör själva anropet rekursivt, är att hjälpfunktionen anropar sig självt. 
+
 
 %    \begin{figure}[H]
 \begin{code}
-numberChain :: Int -> Int -> [Int]
-numberChain x y = reverse $ numberChain' (x:[]) y
+-- | Return a sequence of numbers from range x to y as a list of integers.
+-- Steps: Increment by 2 but, if out of range, decrement by 3.
+numberChain :: (Integral a) => a -> a -> [a]
+-- numberChain :: Int -> Int -> [Int]
+numberChain x y = reverse $ numberChain' [x] y
   where
-    numberChain' :: [Int] -> Int -> [Int]
+    numberChain' :: (Integral a) => [a] -> a -> [a]
+    -- numberChain' :: [Int] -> Int -> [Int]
     numberChain' ys@(x:xs) y 
       | x == y    = ys
       | x < y     = numberChain' (x+2:ys) y
       | otherwise = numberChain' (x-3:ys) y
 \end{code}
-%    \label{code:numberChain}
+
+\subsection*{Exempelkörning}
+%    \begin{figure}[H]
+\begin{spec}
+ghci> numberChain 3 16
+[3, 5, 7, 9, 11, 13, 15, 17, 14, 16]
+ghci> numberChain 1 2
+[1, 3, 0, 2]
+ghci> numberChain 1 1
+[1]
+ghci> numberChain 17 42
+[17, 19, 21, 23, 25, 27, 29, 31, 33, 35, 37, 39, 41, 43, 40, 42]
+\end{spec}
+%    \label{ghci:numberChain}
 %    \end{figure}
 
 \clearpage
-\section{Kortaste vägen}
+\section*{Kortaste vägen}
+Hjälpfunktionerna \mintinline{haskell}{distance}, \mintinline{haskell}{square}, 
+\mintinline{haskell}{x'} och \mintinline{haskell}{y'}
+fyller ingen annan funktion än att beräkna ett värde. 
+Det innebär att varje anrop till dem kan bytas ut mot dess funktionskropp, 
+där parametrarna ersätts med motsvarande argument. 
+Dessa funktioner är med andra ord uttryck och inte satser 
+(eng. \emph{functions are expressions and not statements} som kan ersättas med sitt värde. 
+Vilket innebär att uttrycken är referenstransparenta. 
+
+Likt hjälpfunktionerna räknas funktionen \mintinline{haskell}{totalDistance} 
+som \emph{äkta funktioner} (eng. \emph{pure functions}). 
+Dels för att de saknar sidoeffekter och 
+dels för att de alltid ger samma resultat om
+de anropas samma värde. 
+Resultatet beror med andra ord enbart på dess argument.
 
 %    \begin{figure}[H]
 \begin{code}
@@ -319,4 +401,20 @@ totalDistance ps@(_:ps') = sum $ zipWith distance ps ps'
 %    \label{code:totalDistance}
 %    \end{figure}
 
+\subsection*{Exempelkörning}
+%    \begin{figure}[H]
+\begin{spec}
+ghci> totalDistance [(1.3, 2.4), (5.3, -1.3), (-4.2, -3.4), (5.2, 8.0)]
+29.953845823305446
+ghci> totalDistance [(1.3, 2.4), (5.3, -1.3)]
+5.448853090330111
+ghci> totalDistance [(5.3, -1.3), (-4.2, -3.4)]
+9.729337079164232
+ghci> totalDistance [(-4.2, -3.4), (5.2, 8.0)]
+14.775655653811103
+ghci> totalDistance []
+0.0
+ghci> totalDistance [(3.24, 14.23)]
+0.0
+\end{spec}
 \end{document}

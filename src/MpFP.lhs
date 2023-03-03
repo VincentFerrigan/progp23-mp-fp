@@ -1,21 +1,13 @@
-% TODO Skriv om intro delen. Vad ska vara vart? Tex eller kod delen? Eller båda kanske?
-% Se vad det står i Haddock eller Lit prog kod
-% TODO Ska ett intro skrivas där det står om vad detta är för typ av dokument?
-% Engleska kommentarer på funktionerna för Haddock?
-% TODO hur funkar: 
-% __Example:__
-% @
-% >>> squarePositive ....
-% se list_of_numbers.hs samt haddock dokumentation. Är det något som haddock testar?
-
 %! Author:   Vincent Ferrigan <ferrigan@kth.se>
 %! Date:     2023-03-02
-%! Kurs:     Programmeringsparadigm (progp23)
+%! Course:   Programmeringsparadigm (progp23)
 %! Kurskod:  DD1360
 %! Period:   VT23 P3
 
 % Haskell Literate Programming
 \long\def\ignore#1{}
+
+% Module header
   \ignore{
 \begin{code}
 {- |
@@ -56,26 +48,6 @@ import GHC.Read (list)
 \usepackage{hyperref}
 \usepackage{lmodern}
 
-% Referenser
-%\usepackage[
-%    backend=biber,
-%    % hyperref=true,
-%    maxnames=3, 
-%    minnames=1, 
-%    nohashothers=false
-%    bibencoding=utf8, % eventuellt
-%    style=apa,
-%    % citestyle=apa,
-%    pluralothers=true,
-%    natbib=true
-%    % sorting=nyt
-%    % autocite=inline
-%    ]{biblatex}
-%\DefineBibliographyStrings{english}{andothers={et. al}, and={&}}
-%\DeclareLanguageMapping{english}{english-apa}
-%\addbibresource{references.bib} % hör till referenser
-%
-
 % Haskell Literate Programming
 \long\def\ignore#1{} % För kodsnuttar som ska ignoreras av tex
 %% Minted
@@ -95,28 +67,6 @@ import GHC.Read (list)
   %fontsize=\footnotesize,
   fontsize=\scriptsize,
   }
-
-%% listings
-%\usepackage{listings}
-%\lstloadlanguages{Haskell}
-%\lstnewenvironment{code}
-%    {\lstset{}%
-%      \csname lst@SetFirstLabel\endcsname}
-%    {\csname lst@SaveFirstLabel\endcsname}
-%    \lstset{
-%      basicstyle=\small\ttfamily,
-%      flexiblecolumns=false,
-%      basewidth={0.5em,0.45em},
-%      literate={+}{{$+$}}1 {/}{{$/$}}1 {*}{{$*$}}1 {=}{{$=$}}1
-%               {>}{{$>$}}1 {<}{{$<$}}1 {\\}{{$\lambda$}}1
-%               {\\\\}{{\char`\\\char`\\}}1
-%               {->}{{$\rightarrow$}}2 {>=}{{$\geq$}}2 {<-}{{$\leftarrow$}}2
-%               {<=}{{$\leq$}}2 {=>}{{$\Rightarrow$}}2 
-%               {\ .}{{$\circ$}}2 {\ .\ }{{$\circ$}}2
-%               {>>}{{>>}}2 {>>=}{{>>=}}2
-%               {|}{{$\mid$}}1               
-%    }
-% 
 
 \title{Mästarprov Funktionell Programmering
 %\\Funktionell Programmering
@@ -196,9 +146,6 @@ Då operatorn \mintinline{haskell}{(.)} returnerar
 en sammansättning av funktioner som en enskild funktion räknas även den till 
 högre ordningens funktioner. 
 %(**REF s81 hutton) 
-
-%parencite{}
-%textcite{}
 
 \subsection*{Immutability}
 Data i Haskell är icke-muterbar (eng. \emph{immutable}). 
